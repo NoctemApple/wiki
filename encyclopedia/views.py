@@ -30,13 +30,21 @@ def search(request):
 
     if query:
         entries = util.list_entries()
-        results = [entry for entry in entries if query.lower() in entry.lower()]
+
+        query_lower = query.lower()
+
+        for entry in entries:
+            if entry.lower() == query_lower:
+                return redirect("wiki", title=entry)
+
+        results = [entry for entry in entries if query_lower in entry.lower()]
+
         return render(request, "encyclopedia/search.html", {
-            "results": results,
+            "entries": results,
             "query": query
         })
-    else:
-        return redirect("index")
+
+    return redirect("index")
     
 def create(request):
     if request.method == "POST":
